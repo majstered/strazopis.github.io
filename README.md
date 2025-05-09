@@ -1,1 +1,0 @@
-# strazopis.github.io
