@@ -5,37 +5,130 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>📅 Kalendarz Katolicki</title>
   <style>
+    /* ========= ZMIENNE / MOTYW ========= */
     :root {
-      --bg:#fbfaf7; --card:#ffffff; --ink:#1f2430; --muted:#6b7280;
-      --accent:#1f5fbf; --accent-ink:#ffffff; --border:#e8e8ef;
-      --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.08); --maxw:1100px;
+      --bg:#fbfaf7;
+      --card:#ffffff;
+      --ink:#1f2430;
+      --muted:#6b7280;
+      --accent:#1f5fbf;
+      --accent-ink:#ffffff;
+      --border:#e8e8ef;
+      --radius:16px;
+      --shadow:0 10px 30px rgba(0,0,0,.08);
+      --maxw:1100px;
     }
     .dark {
-      --bg:#10131a; --card:#141824; --ink:#e7ecf6; --muted:#aab3c6;
-      --accent:#3a7bff; --accent-ink:#fff; --border:#263049;
+      --bg:#10131a;
+      --card:#141824;
+      --ink:#e7ecf6;
+      --muted:#aab3c6;
+      --accent:#3a7bff;
+      --accent-ink:#fff;
+      --border:#263049;
       --shadow:0 10px 30px rgba(0,0,0,.5);
     }
-    body { background: var(--bg); color: var(--ink); font-family: "Segoe UI", Roboto, sans-serif; margin:0; line-height:1.6; transition: background .3s, color .3s; }
-    main { max-width: var(--maxw); margin:auto; padding:20px; }
-    h1 { text-align:center; margin-bottom:1rem; }
 
-    .nawigacja { display:flex; justify-content:center; gap:10px; margin:15px 0; }
-    .nawigacja button { background:var(--accent); color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:1rem; }
-    .nawigacja button:hover { background:#144b9a; }
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      line-height: 1.6;
+      transition: background .3s, color .3s;
+    }
 
-    #kalendarz { display:grid; gap:20px; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); margin-top:20px; }
-    .card { background:var(--card); padding:16px; border-radius:var(--radius); box-shadow:var(--shadow); transition:0.3s; }
-    .card:hover { transform:translateY(-3px); }
+    main {
+      max-width: var(--maxw);
+      margin: auto;
+      padding: 20px;
+    }
 
-    textarea { width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--ink); }
-    .notatka-btns { margin-top:8px; display:flex; gap:10px; }
-    .notatka-btns button { flex:1; background:var(--accent); color:white; border:none; padding:8px; border-radius:8px; cursor:pointer; }
-    .notatka-btns button.reset { background:#888; }
+    h1 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
 
-    .mode-toggle { margin-left:auto; cursor:pointer; padding:6px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.9rem; background:var(--card); color:var(--ink); }
+    /* ========= NAWIGACJA ========= */
+    .nawigacja {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 15px 0;
+    }
+    .nawigacja button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .nawigacja button:hover {
+      background: #144b9a;
+    }
+
+    /* ========= KAFELKI ========= */
+    #kalendarz {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      margin-top: 20px;
+    }
+    .card {
+      background: var(--card);
+      padding: 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      transition: 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    /* ========= NOTATKI ========= */
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .notatka-btns {
+      margin-top: 8px;
+      display: flex;
+      gap: 10px;
+    }
+    .notatka-btns button {
+      flex: 1;
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .notatka-btns button.reset {
+      background: #888;
+    }
+
+    /* ========= PRZEŁĄCZNIK TRYBU ========= */
+    .mode-toggle {
+      margin-left: auto;
+      cursor: pointer;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      background: var(--card);
+      color: var(--ink);
+    }
   </style>
 </head>
 <body>
+  <!-- Pasek nawigacyjny -->
   <nav class="nawigacja">
     <button onclick="poprzedniDzien()">◀ Poprzedni</button>
     <button onclick="dzisiaj()">📅 Dziś</button>
@@ -48,10 +141,26 @@
     <p style="text-align:center">Data: <span id="data"></span></p>
 
     <div id="kalendarz">
-      <section class="card"><h3>🎂 Imieniny</h3><p id="imieniny">...</p></section>
-      <section class="card"><h3>🙏 Święci z dnia</h3><p id="swieci">...</p></section>
-      <section class="card"><h3>💡 Myśl dnia</h3><p id="mysl">...</p></section>
-      <section class="card"><h3>📜 Przysłowie</h3><p id="przyslowie">...</p></section>
+      <section class="card">
+        <h3>🎂 Imieniny</h3>
+        <p id="imieniny">Anna, Michał</p>
+      </section>
+
+      <section class="card">
+        <h3>🙏 Święci z dnia</h3>
+        <p id="swieci">Św. Anioł Stróż</p>
+      </section>
+
+      <section class="card">
+        <h3>💡 Myśl dnia</h3>
+        <p id="mysl">„Pokój zaczyna się w sercu.”</p>
+      </section>
+
+      <section class="card">
+        <h3>📜 Przysłowie</h3>
+        <p id="przyslowie">„Październik chodzi po kraju, cichnie ptaków śpiew w gaju.”</p>
+      </section>
+
       <section class="card">
         <h3>📝 Notatka na <span id="data-notatki"></span></h3>
         <textarea id="pole-notatki" rows="4" placeholder="Twoja notatka..."></textarea>
@@ -65,37 +174,33 @@
 
   <script>
     let aktualnaData = new Date();
-    let daneImieniny = {}, daneSwieci = {}, daneMysli = {}, danePrzyslowia = {};
-
-    async function wczytajDane() {
-      daneImieniny = await fetch("imieniny.json").then(r => r.json());
-      daneSwieci   = await fetch("swieci.json").then(r => r.json());
-      daneMysli    = await fetch("mysli.json").then(r => r.json());
-      danePrzyslowia = await fetch("przyslowia.json").then(r => r.json());
-      aktualizujWidok();
-    }
 
     function aktualizujWidok() {
       const iso = aktualnaData.toISOString().slice(0,10);
       document.getElementById("data").textContent = iso;
       document.getElementById("data-notatki").textContent = iso;
-
-      document.getElementById("imieniny").textContent = (daneImieniny[iso] || ["Brak danych"]).join(", ");
-      document.getElementById("swieci").textContent   = (daneSwieci[iso] || ["Brak danych"]).join(", ");
-      document.getElementById("mysl").textContent     = daneMysli[iso] || "Brak danych";
-      document.getElementById("przyslowie").textContent = danePrzyslowia[iso] || "Brak danych";
-
+      // Wczytaj notatkę dla danej daty
       const notatka = localStorage.getItem("notatka-" + iso);
       document.getElementById("pole-notatki").value = notatka || "";
     }
 
-    function poprzedniDzien() { aktualnaData.setDate(aktualnaData.getDate() - 1); aktualizujWidok(); }
-    function nastepnyDzien() { aktualnaData.setDate(aktualnaData.getDate() + 1); aktualizujWidok(); }
-    function dzisiaj() { aktualnaData = new Date(); aktualizujWidok(); }
+    function poprzedniDzien() {
+      aktualnaData.setDate(aktualnaData.getDate() - 1);
+      aktualizujWidok();
+    }
+    function nastepnyDzien() {
+      aktualnaData.setDate(aktualnaData.getDate() + 1);
+      aktualizujWidok();
+    }
+    function dzisiaj() {
+      aktualnaData = new Date();
+      aktualizujWidok();
+    }
 
     function zapiszNotatke() {
       const iso = aktualnaData.toISOString().slice(0,10);
-      localStorage.setItem("notatka-" + iso, document.getElementById("pole-notatki").value);
+      const tekst = document.getElementById("pole-notatki").value;
+      localStorage.setItem("notatka-" + iso, tekst);
       alert("Notatka zapisana ✅");
     }
     function usunNotatke() {
@@ -105,7 +210,7 @@
       alert("Notatka usunięta ❌");
     }
 
-    wczytajDane();
+    aktualizujWidok();
   </script>
 </body>
 </html>
