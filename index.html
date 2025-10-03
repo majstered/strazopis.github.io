@@ -1,314 +1,111 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <link rel="icon" type="image/png" href="aplikacje.png">
-
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TAJEMNICE RÓŻAŃCA ŚWIĘTEGO</title>
+  <title>📅 Kalendarz Katolicki</title>
   <style>
+    :root {
+      --bg:#fbfaf7; --card:#ffffff; --ink:#1f2430; --muted:#6b7280;
+      --accent:#1f5fbf; --accent-ink:#ffffff; --border:#e8e8ef;
+      --radius:16px; --shadow:0 10px 30px rgba(0,0,0,.08); --maxw:1100px;
+    }
+    .dark {
+      --bg:#10131a; --card:#141824; --ink:#e7ecf6; --muted:#aab3c6;
+      --accent:#3a7bff; --accent-ink:#fff; --border:#263049;
+      --shadow:0 10px 30px rgba(0,0,0,.5);
+    }
+    body { background: var(--bg); color: var(--ink); font-family: "Segoe UI", Roboto, sans-serif; margin:0; line-height:1.6; transition: background .3s, color .3s; }
+    main { max-width: var(--maxw); margin:auto; padding:20px; }
+    h1 { text-align:center; margin-bottom:1rem; }
 
-    /* Zmiennie i bazowe style */
-    :root{
-      --bg:#fbfaf7;
-      --card:#ffffff;
-      --ink:#1f2430;
-      --muted:#667085;
-      --blue:#0a4fa3;          /* tło niebieskiego bloku */
-      --border:#e6e6ea;
-      --radius:16px;
-      --shadow:0 8px 28px rgba(0,0,0,.08);
-      --accent:#1f5fbf;
-    }
-    .dark{
-      --bg:#10131a;
-      --card:#141824;
-      --ink:#e7ecf6;
-      --muted:#aab3c6;
-      --blue:#0b3d7a;
-      --border:#263049;
-      --shadow:0 8px 28px rgba(0,0,0,.45);
-      --accent:#7fb0ff;
-    }
+    .nawigacja { display:flex; justify-content:center; gap:10px; margin:15px 0; }
+    .nawigacja button { background:var(--accent); color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-size:1rem; }
+    .nawigacja button:hover { background:#144b9a; }
 
-    html,body{height:100%}
-    body{
-      margin:0;
-      font-family: ui-serif, Georgia, "Times New Roman", serif;
-      background:var(--bg);
-      color:var(--ink);
-      line-height:1.6;
-    }
+    #kalendarz { display:grid; gap:20px; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); margin-top:20px; }
+    .card { background:var(--card); padding:16px; border-radius:var(--radius); box-shadow:var(--shadow); transition:0.3s; }
+    .card:hover { transform:translateY(-3px); }
 
-    /* Jedyny nagłówek */
-    .topbar{
-      position:sticky; top:0; z-index:10;
-      background:var(--card);
-      border-bottom:1px solid var(--border);
-      display:flex; align-items:center; justify-content:space-between;
-      padding:14px 18px;
-    }
-    .topbar h1{
-      font-size: clamp(18px, 2.6vw, 28px);
-      margin:0;
-      letter-spacing:.2px;
-    }
-    .mode-btn{
-      border:1px solid var(--border);
-      background:transparent;
-      color:var(--ink);
-      border-radius:999px;
-      padding:8px 12px;
-      cursor:pointer;
-    }
+    textarea { width:100%; padding:8px; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--ink); }
+    .notatka-btns { margin-top:8px; display:flex; gap:10px; }
+    .notatka-btns button { flex:1; background:var(--accent); color:white; border:none; padding:8px; border-radius:8px; cursor:pointer; }
+    .notatka-btns button.reset { background:#888; }
 
-    .wrap{
-      max-width: 1050px;
-      margin: 28px auto;
-      padding: 0 16px 56px;
-    }
-
-    .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding: 18px;
-      margin: 18px 0 28px;
-    }
-
-    .section-title{
-      font-size: clamp(18px, 2.2vw, 24px);
-      margin: 0 0 14px;
-      border-left:6px solid var(--accent);
-      padding-left:10px;
-    }
-
-    /* Niebieski blok z listą */
-    .list-box{
-      background: var(--blue);
-      color: #fff;
-      border-radius: calc(var(--radius) - 4px);
-      padding: clamp(14px, 3vw, 24px);
-    }
-    .list-box ul{
-      margin:0;
-      padding-left: 1.2rem;
-      list-style: disc inside;   /* punktor w środku pola */
-    }
-    .list-box li{
-      font-size: clamp(16px, 2.1vw, 20px);
-      margin: .35rem 0;
-    }
-    .list-box p{
-      margin: .35rem 0;
-      font-size: clamp(16px, 2.1vw, 20px);
-    }
-    .list-box li::marker{ color:#fff; }
-
-    /* Modlitwa – węższa, wyśrodkowana */
-    .prayer-box{
-      background: var(--blue);
-      color: #fff;
-      border-radius: calc(var(--radius) - 4px);
-      padding: clamp(14px, 3vw, 24px);
-      font-size: 1.15rem;
-      line-height: 1.7;
-      text-align: center;
-    }
-
-    /* Przyciski audio */
-    .audio-controls{
-      text-align:center;
-      margin-top:40px;
-    }
-    .audio-btn{
-      background: var(--accent);
-      color:#fff;
-      border:none;
-      border-radius: var(--radius);
-      padding:12px 24px;
-      font-size:18px;
-      cursor:pointer;
-      box-shadow: var(--shadow);
-    }
-    .audio-btn:hover{
-      opacity:0.9;
-    }
+    .mode-toggle { margin-left:auto; cursor:pointer; padding:6px 12px; border:1px solid var(--border); border-radius:var(--radius); font-size:0.9rem; background:var(--card); color:var(--ink); }
   </style>
 </head>
 <body>
-  <!-- Nagłówek -->
-<header class="topbar">
-    <h1>TAJEMNICE RÓŻAŃCA ŚWIĘTEGO</h1>
-    <button class="mode-btn" id="modeBtn" aria-label="Przełącz tryb">🌓 Dzień / Noc</button>
-  </header>
+  <nav class="nawigacja">
+    <button onclick="poprzedniDzien()">◀ Poprzedni</button>
+    <button onclick="dzisiaj()">📅 Dziś</button>
+    <button onclick="nastepnyDzien()">Następny ▶</button>
+    <button class="mode-toggle" onclick="document.body.classList.toggle('dark')">🌙/☀️</button>
+  </nav>
 
-  <main class="wrap">
+  <main>
+    <h1>📅 Kalendarz Katolicki</h1>
+    <p style="text-align:center">Data: <span id="data"></span></p>
 
-    <!-- RADOSNE -->
-    <section class="card" id="radosne">
-      <h2 class="section-title">Tajemnice radosne (poniedziałki i soboty)</h2>
-      <div class="list-box" aria-label="Tajemnice radosne — lista">
-        <ul>
-          <li>Zwiastowanie Najświętszej Maryi Pannie</li>
-          <li>Nawiedzenie świętej Elżbiety</li>
-          <li>Narodzenie Pana Jezusa</li>
-          <li>Ofiarowanie Jezusa w Świątyni</li>
-          <li>Odnalezienie Jezusa w Świątyni</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- ŚWIATŁA -->
-    <section class="card" id="swiatla">
-      <h2 class="section-title">Tajemnice światła (czwartki)</h2>
-      <div class="list-box" aria-label="Tajemnice światła — lista">
-        <ul>
-          <li>Chrzest Pana Jezusa w Jordanie</li>
-          <li>Objawienie siebie na weselu w Kanie Galilejskiej</li>
-          <li>Głoszenie Królestwa Bożego i wzywanie do nawrócenia</li>
-          <li>Przemienienie na górze Tabor</li>
-          <li>Ustanowienie Eucharystii</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- BOLESNE -->
-    <section class="card" id="bolesne">
-      <h2 class="section-title">Tajemnice bolesne (wtorki i piątki)</h2>
-      <div class="list-box" aria-label="Tajemnice bolesne — lista">
-        <ul>
-          <li>Modlitwa w Ogrójcu</li>
-          <li>Biczowanie</li>
-          <li>Cierniem ukoronowanie</li>
-          <li>Droga Krzyżowa</li>
-          <li>Śmierć na Krzyżu</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- CHWALEBNE -->
-    <section class="card" id="chwalebne">
-      <h2 class="section-title">Tajemnice chwalebne (środy i niedziele)</h2>
-      <div class="list-box" aria-label="Tajemnice chwalebne — lista">
-        <ul>
-          <li>Zmartwychwstanie Pana Jezusa</li>
-          <li>Wniebowstąpienie</li>
-          <li>Zesłanie Ducha Świętego</li>
-          <li>Wniebowzięcie Maryi</li>
-          <li>Ukoronowanie Matki Bożej na Królową nieba i ziemi</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- MODLITWA FATIMSKA -->
-    <section class="card" id="modlitwa-fatimska">
-      <h2 class="section-title">Modlitwa fatimska „O mój Jezu” (1917)</h2>
-      <div class="prayer-box" aria-label="Modlitwa fatimska">
-        O mój Jezu, przebacz nam nasze grzechy, zachowaj nas od ognia piekielnego;
-        zaprowadź wszystkie dusze do nieba i dopomóż szczególnie tym,
-        którzy najbardziej potrzebują Twojego miłosierdzia.
-      </div>
-    </section>
-
-        <!-- MODLITWA FATIMSKA -->
-    <section class="card" id="modlitwa-fatimska">
-      <h2 class="section-title">Modlitwa do św. Michała Archanioła</h2>
-      <div class="prayer-box" aria-label="Modlitwa fatimska">
-        Święty Michale Archaniele!
-Wspomagaj nas w walce, a przeciw niegodziwości
-i zasadzkom złego ducha bądź naszą obroną.
-Oby go Bóg pogromić raczył, pokornie o to prosimy,
-a Ty, Wodzu niebieskich zastępów,
-szatana i inne duchy złe, które na zgubę dusz ludzkich
-po tym świecie krążą, mocą Bożą strąć do piekła.
-
-Amen.
-      </div>
-    </section>
-
-    <!-- AUDIO BUTTON -->
-    <div class="audio-controls">
-      <button class="audio-btn" id="audioBtn">▶ Start</button>
-      <audio id="myAudio" src="na.mp3"></audio>
+    <div id="kalendarz">
+      <section class="card"><h3>🎂 Imieniny</h3><p id="imieniny">...</p></section>
+      <section class="card"><h3>🙏 Święci z dnia</h3><p id="swieci">...</p></section>
+      <section class="card"><h3>💡 Myśl dnia</h3><p id="mysl">...</p></section>
+      <section class="card"><h3>📜 Przysłowie</h3><p id="przyslowie">...</p></section>
+      <section class="card">
+        <h3>📝 Notatka na <span id="data-notatki"></span></h3>
+        <textarea id="pole-notatki" rows="4" placeholder="Twoja notatka..."></textarea>
+        <div class="notatka-btns">
+          <button onclick="zapiszNotatke()">💾 Zapisz</button>
+          <button onclick="usunNotatke()" class="reset">🗑 Usuń</button>
+        </div>
+      </section>
     </div>
-
   </main>
-<!-- Pasek nawigacyjny -->
-<nav class="nav-bar">
-  <a href="https://majstered.github.io/siedliszcze.github.io/" class="nav-btn">🏠 Strona główna</a>
-
-</nav>
-
-<style>
-.nav-bar {
-  text-align: center;
-  margin: 30px 0;
-}
-
-.nav-btn {
-  display: inline-block;
-  margin: 8px;
-  padding: 10px 20px;
-  background: var(--blue, #0a4fa3); /* korzysta z Twojej zmiennej koloru */
-  color: #fff;
-  font-size: 16px;
-  border-radius: 12px;
-  text-decoration: none;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  transition: background 0.3s, transform 0.2s;
-}
-
-.nav-btn:hover {
-  background: #083d80;
-  transform: translateY(-2px);
-}
-</style>
 
   <script>
-    // Tryb Dzień/Noc z pamięcią
-    (function(){
-      const key = 'theme-preference';
-      const btn = document.getElementById('modeBtn');
+    let aktualnaData = new Date();
+    let daneImieniny = {}, daneSwieci = {}, daneMysli = {}, danePrzyslowia = {};
 
-      function applyTheme(val){
-        document.documentElement.classList.toggle('dark', val === 'dark');
-      }
-      function currentTheme(){
-        return document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-      }
+    async function wczytajDane() {
+      daneImieniny = await fetch("imieniny.json").then(r => r.json());
+      daneSwieci   = await fetch("swieci.json").then(r => r.json());
+      daneMysli    = await fetch("mysli.json").then(r => r.json());
+      danePrzyslowia = await fetch("przyslowia.json").then(r => r.json());
+      aktualizujWidok();
+    }
 
-      const saved = localStorage.getItem(key);
-      if(saved){ applyTheme(saved); }
-      else if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
-        applyTheme('dark');
-      }
+    function aktualizujWidok() {
+      const iso = aktualnaData.toISOString().slice(0,10);
+      document.getElementById("data").textContent = iso;
+      document.getElementById("data-notatki").textContent = iso;
 
-      btn.addEventListener('click', ()=>{
-        const next = currentTheme() === 'dark' ? 'light' : 'dark';
-        applyTheme(next);
-        localStorage.setItem(key, next);
-      });
-    })();
+      document.getElementById("imieniny").textContent = (daneImieniny[iso] || ["Brak danych"]).join(", ");
+      document.getElementById("swieci").textContent   = (daneSwieci[iso] || ["Brak danych"]).join(", ");
+      document.getElementById("mysl").textContent     = daneMysli[iso] || "Brak danych";
+      document.getElementById("przyslowie").textContent = danePrzyslowia[iso] || "Brak danych";
 
-    // Audio Start/Stop
-    const audio = document.getElementById("myAudio");
-    const audioBtn = document.getElementById("audioBtn");
-    let playing = false;
+      const notatka = localStorage.getItem("notatka-" + iso);
+      document.getElementById("pole-notatki").value = notatka || "";
+    }
 
-    audioBtn.addEventListener("click", ()=>{
-      if(!playing){
-        audio.play();
-        audioBtn.textContent = "⏸ Stop";
-        playing = true;
-      }else{
-        audio.pause();
-        audio.currentTime = 0;
-        audioBtn.textContent = "▶ Start";
-        playing = false;
-      }
-    });
+    function poprzedniDzien() { aktualnaData.setDate(aktualnaData.getDate() - 1); aktualizujWidok(); }
+    function nastepnyDzien() { aktualnaData.setDate(aktualnaData.getDate() + 1); aktualizujWidok(); }
+    function dzisiaj() { aktualnaData = new Date(); aktualizujWidok(); }
+
+    function zapiszNotatke() {
+      const iso = aktualnaData.toISOString().slice(0,10);
+      localStorage.setItem("notatka-" + iso, document.getElementById("pole-notatki").value);
+      alert("Notatka zapisana ✅");
+    }
+    function usunNotatke() {
+      const iso = aktualnaData.toISOString().slice(0,10);
+      localStorage.removeItem("notatka-" + iso);
+      document.getElementById("pole-notatki").value = "";
+      alert("Notatka usunięta ❌");
+    }
+
+    wczytajDane();
   </script>
 </body>
 </html>
