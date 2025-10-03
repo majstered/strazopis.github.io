@@ -3,214 +3,400 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>📅 Kalendarz Katolicki</title>
+  <title>Nasze projekty — Strona główna</title>
+  <meta name="description" content="Hub naszych projektów: Siedliszcze, Strażopis, Odpady, Yanopis oraz rozdziały książki Znaki Maryi."/>
   <style>
-    /* ========= ZMIENNE / MOTYW ========= */
-    :root {
+    /* =========================
+       ZMIENNE, KOLORY, MOTYW
+       ========================= */
+    :root{
       --bg:#fbfaf7;
       --card:#ffffff;
       --ink:#1f2430;
       --muted:#6b7280;
       --accent:#1f5fbf;
       --accent-ink:#ffffff;
-      --border:#e8e8ef;
+      --blue:#cfe5ff;      /* delikatny maryjny baner */
+      --blue-ink:#001a44;
+      --sand:#fff7dc;
       --radius:16px;
       --shadow:0 10px 30px rgba(0,0,0,.08);
       --maxw:1100px;
+      --border:#e8e8ef;
+      --chip:#eef3ff;
     }
-    .dark {
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#10131a;
+        --card:#141824;
+        --ink:#e9eef7;
+        --muted:#aab3c6;
+        --accent:#7aa8ff;
+        --accent-ink:#001a44;
+        --blue:#0c2e63;
+        --blue-ink:#dfe9ff;
+        --sand:#2a2430;
+        --border:#263049;
+        --chip:#112244;
+      }
+    }
+    .dark{
       --bg:#10131a;
       --card:#141824;
-      --ink:#e7ecf6;
+      --ink:#e9eef7;
       --muted:#aab3c6;
-      --accent:#3a7bff;
-      --accent-ink:#fff;
+      --accent:#7aa8ff;
+      --accent-ink:#001a44;
+      --blue:#0c2e63;
+      --blue-ink:#dfe9ff;
+      --sand:#2a2430;
       --border:#263049;
-      --shadow:0 10px 30px rgba(0,0,0,.5);
+      --chip:#112244;
     }
 
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: "Segoe UI", Roboto, sans-serif;
-      margin: 0;
-      line-height: 1.6;
-      transition: background .3s, color .3s;
+    /* =========================
+       BAZA
+       ========================= */
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+      background:var(--bg);
+      color:var(--ink);
+    }
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+
+    .wrap{max-width:var(--maxw); margin:0 auto; padding:24px}
+
+    /* =========================
+       NAVBAR
+       ========================= */
+    .nav{
+      position:sticky; top:0; z-index:100;
+      background:rgba(255,255,255,.6);
+      backdrop-filter:saturate(1.2) blur(10px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav .row{display:flex; gap:12px; align-items:center; justify-content:space-between; padding:10px 24px; max-width:var(--maxw); margin:0 auto}
+    .brand{font-weight:700; letter-spacing:.2px}
+    .navlinks{display:flex; gap:10px; flex-wrap:wrap}
+    .nav a.btn{
+      padding:8px 12px; border:1px solid var(--border);
+      border-radius:999px; background:var(--card)
+    }
+    .toggle{
+      border:1px solid var(--border); background:var(--card);
+      border-radius:999px; padding:8px 12px; cursor:pointer
     }
 
-    main {
-      max-width: var(--maxw);
-      margin: auto;
-      padding: 20px;
+    /* =========================
+       HERO
+       ========================= */
+    .hero{
+      background:linear-gradient(180deg, var(--blue), transparent 70%);
+      border-bottom:1px solid var(--border);
+    }
+    .hero .inner{max-width:var(--maxw); margin:0 auto; padding:48px 24px 28px}
+    .hero h1{margin:0 0 8px; font-size: clamp(28px, 5vw, 40px); color:var(--blue-ink)}
+    .hero p{margin:0; color:var(--blue-ink); opacity:.9}
+    .hero-art{
+      position:relative; margin-top:24px; border-radius:var(--radius);
+      background:var(--card); box-shadow:var(--shadow); overflow:hidden; border:1px solid var(--border)
+    }
+    .hero-art svg{width:100%; height:auto; display:block}
+
+    /* =========================
+       PANEL STEROWANIA (wyszukiwarka + filtry)
+       ========================= */
+    .controls{display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin:26px 0}
+    .search{
+      flex:1 1 280px; display:flex; align-items:center; gap:10px;
+      background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 12px
+    }
+    .search input{
+      border:0; outline:0; background:transparent; color:var(--ink); width:100%
+    }
+    .chips{display:flex; gap:8px; flex-wrap:wrap}
+    .chip{
+      padding:8px 12px; border-radius:999px; background:var(--chip);
+      border:1px solid var(--border); cursor:pointer; font-size:14px
+    }
+    .chip.active{background:var(--accent); color:var(--accent-ink); border-color:transparent}
+
+    /* =========================
+       GRID KAFELKÓW
+       ========================= */
+    .grid{
+      display:grid; gap:16px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      align-items:stretch
+    }
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:18px;
+      box-shadow:var(--shadow); display:flex; flex-direction:column; overflow:hidden
+    }
+    .card .thumb{
+      aspect-ratio: 16/9; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg, var(--sand), #ffffff 60%); font-size:38px
+    }
+    .card .body{padding:14px 14px 8px}
+    .card h3{margin:0 0 6px; font-size:18px}
+    .card p{margin:0 0 12px; color:var(--muted); font-size:14px}
+    .tags{display:flex; gap:6px; flex-wrap:wrap; margin-top:auto; padding:0 14px 14px}
+    .tag{font-size:12px; padding:4px 8px; border-radius:999px; background:var(--chip); border:1px solid var(--border)}
+    .go{
+      margin:0 14px 14px; display:inline-block; padding:10px 14px; border-radius:12px;
+      background:var(--accent); color:var(--accent-ink); text-align:center; font-weight:600
     }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 1rem;
+    /* =========================
+       STOPKA
+       ========================= */
+    footer{
+      margin-top:36px; border-top:1px solid var(--border);
+      background:linear-gradient(180deg, transparent, rgba(0,0,0,.02));
     }
-
-    /* ========= NAWIGACJA ========= */
-    .nawigacja {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin: 15px 0;
-    }
-    .nawigacja button {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    .nawigacja button:hover {
-      background: #144b9a;
-    }
-
-    /* ========= KAFELKI ========= */
-    #kalendarz {
-      display: grid;
-      gap: 20px;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      margin-top: 20px;
-    }
-    .card {
-      background: var(--card);
-      padding: 16px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      transition: 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-3px);
-    }
-
-    /* ========= NOTATKI ========= */
-    textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: var(--bg);
-      color: var(--ink);
-    }
-    .notatka-btns {
-      margin-top: 8px;
-      display: flex;
-      gap: 10px;
-    }
-    .notatka-btns button {
-      flex: 1;
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 8px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    .notatka-btns button.reset {
-      background: #888;
-    }
-
-    /* ========= PRZEŁĄCZNIK TRYBU ========= */
-    .mode-toggle {
-      margin-left: auto;
-      cursor: pointer;
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: 0.9rem;
-      background: var(--card);
-      color: var(--ink);
-    }
+    footer .wrap{padding-top:18px; padding-bottom:32px; color:var(--muted); font-size:14px}
   </style>
 </head>
 <body>
-  <!-- Pasek nawigacyjny -->
-  <nav class="nawigacja">
-    <button onclick="poprzedniDzien()">◀ Poprzedni</button>
-    <button onclick="dzisiaj()">📅 Dziś</button>
-    <button onclick="nastepnyDzien()">Następny ▶</button>
-    <button class="mode-toggle" onclick="document.body.classList.toggle('dark')">🌙/☀️</button>
-  </nav>
-
-  <main>
-    <h1>📅 Kalendarz Katolicki</h1>
-    <p style="text-align:center">Data: <span id="data"></span></p>
-
-    <div id="kalendarz">
-      <section class="card">
-        <h3>🎂 Imieniny</h3>
-        <p id="imieniny">Anna, Michał</p>
-      </section>
-
-      <section class="card">
-        <h3>🙏 Święci z dnia</h3>
-        <p id="swieci">Św. Anioł Stróż</p>
-      </section>
-
-      <section class="card">
-        <h3>💡 Myśl dnia</h3>
-        <p id="mysl">„Pokój zaczyna się w sercu.”</p>
-      </section>
-
-      <section class="card">
-        <h3>📜 Przysłowie</h3>
-        <p id="przyslowie">„Październik chodzi po kraju, cichnie ptaków śpiew w gaju.”</p>
-      </section>
-
-      <section class="card">
-        <h3>📝 Notatka na <span id="data-notatki"></span></h3>
-        <textarea id="pole-notatki" rows="4" placeholder="Twoja notatka..."></textarea>
-        <div class="notatka-btns">
-          <button onclick="zapiszNotatke()">💾 Zapisz</button>
-          <button onclick="usunNotatke()" class="reset">🗑 Usuń</button>
-        </div>
-      </section>
+  <!-- NAV -->
+  <div class="nav">
+    <div class="row">
+      <div class="brand">🌐 Ramzi • Hub</div>
+      <div class="navlinks">
+        <a class="btn" href="https://majstered.github.io/siedliszcze.github.io/">🏠 Siedliszcze</a>
+        <a class="btn" href="https://majstered.github.io/strazopis.github.io/">✍️ Strażopis</a>
+        <a class="btn" href="https://majstered.github.io/odpady.github.io/">♻️ Odpady</a>
+        <a class="btn" href="https://majstered.github.io/yanopis.github.io/">📜 Yanopis</a>
+      </div>
+      <button class="toggle" id="modeBtn" aria-label="Przełącz tryb">🌙 Noc</button>
     </div>
+  </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="inner">
+      <h1>Nasze projekty w jednym miejscu</h1>
+      <p>Strona główna łącząca wszystkie tematy — od lokalnej społeczności, przez ekologię i publicystykę, po rozdziały książki <em>„Znaki Maryi”</em>.</p>
+
+      <!-- Ilustracja: delikatna fala + symbol róży/hostii (lekki, neutralny motyw) -->
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 1200 360" xmlns="http://www.w3.org/2000/svg" role="img">
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1" y1="0" y2="1">
+              <stop offset="0%" stop-color="var(--sand)"/>
+              <stop offset="100%" stop-color="#ffffff"/>
+            </linearGradient>
+          </defs>
+          <rect width="1200" height="360" fill="url(#g1)"/>
+          <!-- Fala -->
+          <path d="M0,240 C200,180 400,300 600,240 C800,180 1000,300 1200,240 L1200,360 L0,360 Z" fill="var(--blue)" opacity=".25"/>
+          <!-- Delikatny znak róży (symboliczny) -->
+          <g transform="translate(950,120)">
+            <circle cx="0" cy="0" r="42" fill="none" stroke="var(--blue-ink)" stroke-width="2" opacity=".35"/>
+            <path d="M-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" fill="none" stroke="var(--blue-ink)" stroke-width="1.5" opacity=".35"/>
+            <path d="M0,-22 C4,-10 10,-8 12,0 C10,8 4,10 0,22 C-4,10 -10,8 -12,0 C-10,-8 -4,-10 0,-22 Z" fill="none" stroke="var(--blue-ink)" stroke-width="1.5" opacity=".35"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- KONTROLA: wyszukiwarka + filtry -->
+    <div class="controls">
+      <label class="search" title="Szukaj po tytule i opisie">
+        <span>🔎</span>
+        <input id="q" type="search" placeholder="Szukaj projektów lub rozdziałów…" />
+      </label>
+      <div class="chips" id="chips">
+        <!-- Chip „Wszystko” zawsze pierwszy -->
+        <button class="chip active" data-cat="*">Wszystko</button>
+        <button class="chip" data-cat="Miejscowość">Miejscowość</button>
+        <button class="chip" data-cat="Publicystyka">Publicystyka</button>
+        <button class="chip" data-cat="Ekologia">Ekologia</button>
+        <button class="chip" data-cat="Duchowość">Duchowość</button>
+        <button class="chip" data-cat="Znaki Maryi">Znaki Maryi</button>
+      </div>
+    </div>
+
+    <!-- GRID zapełniany JS-em -->
+    <section id="grid" class="grid" aria-live="polite"></section>
+
+    <!-- NOSCRIPT fallback (prosta lista) -->
+    <noscript>
+      <ul>
+        <li><a href="https://majstered.github.io/siedliszcze.github.io/">Siedliszcze</a> — strona o miejscowości.</li>
+        <li><a href="https://majstered.github.io/strazopis.github.io/">Strażopis</a> — publicystyka i opowieści.</li>
+        <li><a href="https://majstered.github.io/odpady.github.io/">Odpady</a> — segregacja i ekologia.</li>
+        <li><a href="https://majstered.github.io/yanopis.github.io/">Yanopis</a> — duchowe treści.</li>
+      </ul>
+    </noscript>
   </main>
 
+  <footer>
+    <div class="wrap">
+      © 2025 Ramzi • Hub projektów • <span style="opacity:.8">GitHub Pages</span>
+    </div>
+  </footer>
+
   <script>
-    let aktualnaData = new Date();
+    /* =========================
+       DANE: DOPISUJ TUTAJ NOWE KAFELKI
+       Jak dodać nowy link?
+       1) Skopiuj jeden obiekt i zmień: title, url, desc, emoji, cat, tags.
+       2) Zapisz — pojawi się automatycznie w siatce i w wyszukiwarce.
+       ========================= */
+    const projects = [
+      {
+        title: "Siedliszcze — strona główna",
+        url: "https://majstered.github.io/siedliszcze.github.io/",
+        desc: "Aktualności, zdjęcia i informacje o naszej miejscowości.",
+        emoji: "🏠",
+        cat: "Miejscowość",
+        tags: ["lokalnie","społeczność"]
+      },
+      {
+        title: "Strażopis",
+        url: "https://majstered.github.io/strazopis.github.io/",
+        desc: "Publicystyka, opowieści i reportaże.",
+        emoji: "✍️",
+        cat: "Publicystyka",
+        tags: ["artykuły","felietony"]
+      },
+      {
+        title: "Odpady • Ekologia",
+        url: "https://majstered.github.io/odpady.github.io/",
+        desc: "Segregacja, kalendarze odbioru i porady zero-waste.",
+        emoji: "♻️",
+        cat: "Ekologia",
+        tags: ["recykling","poradnik"]
+      },
+      {
+        title: "Yanopis",
+        url: "https://majstered.github.io/yanopis.github.io/",
+        desc: "Duchowe rozważania, modlitwy, materiały do czytania.",
+        emoji: "📜",
+        cat: "Duchowość",
+        tags: ["modlitwa","refleksje"]
+      },
 
-    function aktualizujWidok() {
-      const iso = aktualnaData.toISOString().slice(0,10);
-      document.getElementById("data").textContent = iso;
-      document.getElementById("data-notatki").textContent = iso;
-      // Wczytaj notatkę dla danej daty
-      const notatka = localStorage.getItem("notatka-" + iso);
-      document.getElementById("pole-notatki").value = notatka || "";
+      /* ====== Placeholdery pod książkę „Znaki Maryi” (możesz podmienić URL-e) ====== */
+      {
+        title: "Znaki Maryi — Rozdział 1: Jak spotkać Maryję?",
+        url: "#",
+        desc: "Wprowadzenie w ciszę, skupienie i drogę serca.",
+        emoji: "🌹",
+        cat: "Znaki Maryi",
+        tags: ["wprowadzenie","modlitwa"]
+      },
+      {
+        title: "Znaki Maryi — Różaniec",
+        url: "#",
+        desc: "Znaczenie różańca, obietnice i praktyka na co dzień.",
+        emoji: "📿",
+        cat: "Znaki Maryi",
+        tags: ["różaniec","praktyka"]
+      },
+      {
+        title: "Znaki Maryi — Objawienia przez wieki",
+        url: "#",
+        desc: "Chronologia uznanych objawień i ich przesłanie.",
+        emoji: "🕊️",
+        cat: "Znaki Maryi",
+        tags: ["historia","przesłanie"]
+      },
+    ];
+
+    /* =========================
+       RENDER SIATKI
+       ========================= */
+    const grid = document.getElementById('grid');
+    const q = document.getElementById('q');
+    const chips = document.getElementById('chips');
+
+    let activeCat = '*';
+
+    function createCard(item){
+      const el = document.createElement('article');
+      el.className = 'card';
+      el.innerHTML = `
+        <div class="thumb" aria-hidden="true">${item.emoji ?? "🔗"}</div>
+        <div class="body">
+          <h3>${item.title}</h3>
+          <p>${item.desc}</p>
+        </div>
+        <div class="tags">
+          <span class="tag">${item.cat}</span>
+          ${ (item.tags||[]).map(t=>`<span class="tag">${t}</span>`).join('') }
+        </div>
+        <a class="go" href="${item.url}">Przejdź</a>
+      `;
+      return el;
     }
 
-    function poprzedniDzien() {
-      aktualnaData.setDate(aktualnaData.getDate() - 1);
-      aktualizujWidok();
-    }
-    function nastepnyDzien() {
-      aktualnaData.setDate(aktualnaData.getDate() + 1);
-      aktualizujWidok();
-    }
-    function dzisiaj() {
-      aktualnaData = new Date();
-      aktualizujWidok();
+    function applyFilters(){
+      const needle = (q.value || '').trim().toLowerCase();
+      grid.innerHTML = '';
+      projects
+        .filter(it => activeCat==='*' ? true : it.cat===activeCat)
+        .filter(it => {
+          if(!needle) return true;
+          const hay = [it.title, it.desc, it.cat, ...(it.tags||[])].join(' ').toLowerCase();
+          return hay.includes(needle);
+        })
+        .forEach(it => grid.appendChild(createCard(it)));
+
+      if(!grid.children.length){
+        const empty = document.createElement('div');
+        empty.style.color = 'var(--muted)';
+        empty.textContent = 'Brak wyników. Spróbuj innego hasła lub filtra.';
+        grid.appendChild(empty);
+      }
     }
 
-    function zapiszNotatke() {
-      const iso = aktualnaData.toISOString().slice(0,10);
-      const tekst = document.getElementById("pole-notatki").value;
-      localStorage.setItem("notatka-" + iso, tekst);
-      alert("Notatka zapisana ✅");
-    }
-    function usunNotatke() {
-      const iso = aktualnaData.toISOString().slice(0,10);
-      localStorage.removeItem("notatka-" + iso);
-      document.getElementById("pole-notatki").value = "";
-      alert("Notatka usunięta ❌");
-    }
+    // WYSZUKIWARKA
+    q.addEventListener('input', applyFilters);
 
-    aktualizujWidok();
+    // FILTRY (chips)
+    chips.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.chip');
+      if(!btn) return;
+      [...chips.querySelectorAll('.chip')].forEach(c=>c.classList.remove('active'));
+      btn.classList.add('active');
+      activeCat = btn.dataset.cat;
+      applyFilters();
+    });
+
+    // TRYB DZIEŃ/NOC z zapisem w localStorage
+    const modeBtn = document.getElementById('modeBtn');
+    const LS_KEY = 'ramzi_mode';
+    function setMode(mode){
+      if(mode==='dark'){ document.documentElement.classList.add('dark'); modeBtn.textContent='☀️ Dzień'; }
+      else { document.documentElement.classList.remove('dark'); modeBtn.textContent='🌙 Noc'; }
+      localStorage.setItem(LS_KEY, mode);
+    }
+    // startowy stan
+    setMode(localStorage.getItem(LS_KEY) || 'auto');
+    // auto = użyj prefers-color-scheme
+    if(localStorage.getItem(LS_KEY)==='auto' || !localStorage.getItem(LS_KEY)){
+      if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+        document.documentElement.classList.add('dark'); modeBtn.textContent='☀️ Dzień';
+      } else {
+        document.documentElement.classList.remove('dark'); modeBtn.textContent='🌙 Noc';
+      }
+    }
+    // przełącznik
+    modeBtn.addEventListener('click', ()=>{
+      const isDark = document.documentElement.classList.contains('dark');
+      setMode(isDark ? 'light' : 'dark');
+    });
+
+    // PIERWSZE RENDEROWANIE
+    applyFilters();
   </script>
 </body>
 </html>
